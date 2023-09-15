@@ -1,88 +1,110 @@
-console.log('netzoffiziere.de');
+console.log('NEOF: productShowcase3D.js');
+
+const bodyElement = document.querySelector('body');
+const DEBUG = bodyElement.hasAttribute('data-debug');
+const currentProduct = bodyElement.getAttribute('data-current-product');
+const glbExists = bodyElement.getAttribute('data-glb-exists') === 'true';
+const modelExists = bodyElement.getAttribute('data-model-exists') === 'true';
+function debugLog(message) {
+  if (DEBUG) {
+    console.log(message);
+  }
+}
 import * as THREE from '../node_modules/three/build/three.module.js';
-import { TextGeometry } from '../node_modules/three/examples/jsm/geometries/TextGeometry.js';
-import { FontLoader } from '../node_modules/three/examples/jsm/loaders/FontLoader.js';
+window.THREE = THREE;
+let version;
+if(DEBUG) {
+  version = new Date().getTime();
+}
+import { loadGLB } from './utils/loadGLB.js';
+import { setupCamera, updateCameraPosition, updateCameraRotation } from './utils/camera.js?$(version}';  
+import { addLights } from './utils/lights.js?$(version}';
+import { updateInfoPanel } from './utils/infoPanel.js?$(version}';
+import { setupEventListeners } from './utils/eventListeners.js?$(version}';
+debugLog('Imports erfolgreich');
+//let currentProduct = 'waermepumpe';
 
-var scrollY;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.6, 1200);
-camera.position.z = 500;
-camera.position.x = 0;
-camera.position.y = 0;
-camera.lookAt(0,0,0);
+const camera = setupCamera();
+/*
+const axesHelper = new THREE.AxesHelper(500);
+scene.add(axesHelper);
+const cameraHelper = new THREE.CameraHelper(camera);
+scene.add(cameraHelper);
+*/
+// Horizontal Grid (X, Y)
+const horizontalGridSize = 50;
+const horizontalGridDivisions = 100;
+const horizontalGridHelper = new THREE.GridHelper(horizontalGridSize, horizontalGridDivisions);
+scene.add(horizontalGridHelper);
 
-const canvas = document.getElementById('canvas');
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setClearColor("#c0c0c0");
-renderer.setSize(window.innerWidth, window.innerHeight);
-canvas.appendChild(renderer.domElement);
-window.addEventListener('resize', () => {
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-})
-window.addEventListener('scroll', () => {
-	scrollY = window.scrollY;
-	if(scrollY>=300) {
-		$('#logo').addClass('small');
-	} else {
-		$('#logo').removeClass('small');
-	}
-	console.log(window.scrollY + ': ' + camera.position.z);
-})
-const light = new THREE.PointLight(0xFFFFFF, 1, 100);
-light.position.set(5, 5, 5);
-scene.add(light);
-const fontloader = new FontLoader();
-fontloader.load(
-	'./node_modules/three/examples/fonts/gentilis_regular.typeface.json', 
-	function ( font ) {
-		const textGeometry = new TextGeometry(
-			'Hello three.js!', 
-			{
-				font: font,
-				size: 30,
-				height: 1,
-				curveSegments: 12,
-				bevelEnabled: true,
-				bevelThickness: 1,
-				bevelSize: 1,
-				bevelOffset: 0,
-				bevelSegments: 5
-			} 
-		);
-		const textMaterial = new THREE.MeshStandardMaterial({color: 0x000000});
-		const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-		textMesh.position.set(0,0,0);
-		scene.add(textMesh);
-	} 
-);
+// Vertical Grid (X, Z)
+/*
+const verticalGridSize = 20;
+const verticalGridDivisions = 20;
+const verticalGridHelper = new THREE.GridHelper(verticalGridSize, verticalGridDivisions);
+verticalGridHelper.rotation.x = Math.PI / 2;
+scene.add(verticalGridHelper);
+*/
+// Depth Grid (Y, Z)
+/*
+const depthGridSize = 20;
+const depthGridDivisions = 20;
+const depthGridHelper = new THREE.GridHelper(depthGridSize, depthGridDivisions);
+depthGridHelper.rotation.z = Math.PI / 2;
+scene.add(depthGridHelper);
+*/
+debugLog('Variablen initialisiert');
 
-const lights = [];
-const lightValues = [
-    {colour: 0x14D14A, intensity: 8, dist: 12, x: 1, y: 0, z: 8},
-    {colour: 0xBE61CF, intensity: 6, dist: 12, x: -2, y: 1, z: -10},
-    {colour: 0x00FFFF, intensity: 3, dist: 10, x: 0, y: 10, z: 1},
-    {colour: 0x00FF00, intensity: 6, dist: 12, x: 0, y: -10, z: -1},
-    {colour: 0x16A7F5, intensity: 6, dist: 12, x: 10, y: 3, z: 0},
-    {colour: 0x90F615, intensity: 6, dist: 12, x: -10, y: -1, z: 0}
-];
-for (let i=0; i<6; i++) {
-    lights[i] = new THREE.PointLight(
-        lightValues[i]['colour'],
-        lightValues[i]['intensity'],
-        lightValues[i]['dist']);
-    lights[i].position.set(
-        lightValues[i]['x'],
-        lightValues[i]['y'],
-        lightValues[i]['z']);
-    scene.add(lights[i]);
+
+function finalizeSetup(model = null) {
+  debugLog('Start: finalizeSetup');
+  if (model) {
+    const mainObject = new THREE.Mesh(model.geometry, model.material);
+    scene.add(mainObject);
+  }  
+  camera.position.set(-5, 2, 0);
+  camera.lookAt(0, 0, 0);
+  addLights(scene, camera.position);
+  renderer.setClearColor(0x0a0a0a);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('canvas').appendChild(renderer.domElement);
+  setupEventListeners(camera, scene);
+  rendering(renderer, scene, camera);
+  debugLog('Ende: finalizeSetup');
 }
-const rendering = function() {
-	requestAnimationFrame(rendering);
-	//scene.rotation.z -= 0.005;
-	//scene.rotation.x -= 0.01;
-	renderer.render(scene, camera);
-}
-rendering();
 
+function rendering(renderer, scene, camera) {
+  requestAnimationFrame(() => rendering(renderer, scene, camera));
+  updateInfoPanel(camera);  
+  renderer.render(scene, camera);
+}
+
+debugLog('Funktionen definiert');
+
+async function loadResources() {
+  let model = null;
+  try {
+    if (glbExists) {
+      const glbResult = await loadGLB(scene, finalizeSetup, currentProduct);
+    } else {
+      debugLog('Kein glb!');  
+    }
+    if (modelExists) {
+      const module = await import(`./models/${currentProduct}.js`);
+      ({ model } = module);
+      model.features.forEach(feature => {
+        const featureMesh = new THREE.Mesh(feature.geometry, feature.material);
+        featureMesh.position.set(...feature.position);
+        scene.add(featureMesh);
+      });    
+    }
+    finalizeSetup(model);
+  } catch (err) {
+    console.error(`Fehler: ${err}`);
+  }
+}
+
+loadResources();
+debugLog('Ende: productShowcase3D.js');

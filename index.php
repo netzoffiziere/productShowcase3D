@@ -35,21 +35,25 @@
 			<div class="control-panel bg-transparent border-0 flex-grow-0 p-2">
 				<h6 class="mb-2">Bewegungssteuerung</h6>
 				<div class="mb-2">
-					<button id="rotate-left" class="btn btn-sm btn-primary"><i class="fas fa-undo"></i></button>
-					<button id="move-forward" class="btn btn-sm btn-primary"><i class="fas fa-arrow-up"></i></button>
-					<button id="rotate-right" class="btn btn-sm btn-primary"><i class="fas fa-redo"></i></button>
+					<button id="rotate-left" class="btn btn-sm btn-primary" title="q"><i class="fas fa-undo"></i></button>
+					<button id="move-forward" class="btn btn-sm btn-primary" title="w oder Arrow Up"><i class="fas fa-arrow-up"></i></button>
+					<button id="rotate-right" class="btn btn-sm btn-primary" title="e"><i class="fas fa-redo"></i></button>
 				</div>
-				<div class="">
-					<button id="move-left" class="btn btn-sm btn-primary"><i class="fas fa-arrow-left"></i></button>
-					<button id="move-back" class="btn btn-sm btn-primary"><i class="fas fa-arrow-down"></i></button>
-					<button id="move-right" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></button>
+				<div class="mb-2">
+					<button id="move-left" class="btn btn-sm btn-primary" title="a oder Arrow Left"><i class="fas fa-arrow-left"></i></button>
+					<button id="move-back" class="btn btn-sm btn-primary" title="s oder Arrow Down"><i class="fas fa-arrow-down"></i></button>
+					<button id="move-right" class="btn btn-sm btn-primary" title="d oder Arrow Right"><i class="fas fa-arrow-right"></i></button>
+				</div>
+				<div class="mb-2">
+					<button id="move-up" class="btn btn-sm btn-secondary" title="r"><i class="fas fa-arrow-alt-circle-up"></i></button>
+					<button id="focusButton" class="btn btn-sm btn-primary" title="x"><i class="fas fa-crosshairs"></i></button>
+					<button id="move-down" class="btn btn-sm btn-secondary" title="f"><i class="fas fa-arrow-alt-circle-down"></i></button>
 				</div>
 			</div>
 			<div class="info-panel bg-transparent border-0 flex-grow-1 p-2">
 				<h4 class="mb-2">Aktuelle Daten</h4>
-				<p>Kameraposition: <span id="camera-position">X, Y, Z</span></p>
-				<p>Kamerarotation: <span id="camera-rotation">X°, Y°, Z°</span></p>
-				<h4 class="mt-3 mb-2">Objekte in Szene</h4>
+				<p>Kameraposition: <span id="camera-pos-x" contenteditable="true">0</span>, <span id="camera-pos-y" contenteditable="true">0</span>, <span id="camera-pos-z" contenteditable="true">0</span></p>
+				<p>Kamerarotation: <span id="camera-rot-x" contenteditable="true">0</span>°, <span id="camera-rot-y" contenteditable="true">0</span>°, <span id="camera-rot-z" contenteditable="true">0</span>°</p>
 				<ul id="object-list">
 					<!-- Hier werden die Objekte in der Szene dynamisch hinzugefügt -->
 				</ul>
@@ -63,6 +67,6 @@
 			</div>
 		</div>
 	</div>
-	<script defer type="module" src="./js/productShowcase3D.js<?php if(DEBUG) echo '?no_cache='.time(); ?>"></script>
+	<script defer type="module" src="./main.js<?php if(DEBUG) echo '?no_cache='.time(); ?>"></script>
 </body>
 </html>

@@ -1,156 +1,154 @@
-import * as THREE from 'three';
-
-function setupKeyboardListeners(camera, moveSpeed, rotateSpeed) {
+function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
   window.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
     switch (key) {
       case 'arrowup':
       case 'w':
-        move('forward');
+        move('forward', camera);
         break;
       case 'arrowdown':
       case 's':
-        move('back');
+        move('back', camera);
         break;
       case 'arrowleft':
       case 'a':
-        move('left');
+        move('left', camera);
         break;
       case 'arrowright':
       case 'd':
-        move('right');
+        move('right', camera);
         break;
       case 'e':
-        rotate('right');
+        rotate('right', camera);
         break;
       case 'q':
-        rotate('left');
+        rotate('left', camera);
+        break;
+      case 'r':
+        move('up', camera);
+        break;
+      case 'f':
+        move('down', camera);
+        break;
+      case 'x':
+        move('down', camera);
         break;
     }
   });
 }
-function setupMouseListeners(camera, moveSpeed, rotateSpeed) {
-  document.getElementById('rotate-left').addEventListener('click', () => rotate('left'));
-  document.getElementById('move-forward').addEventListener('click', () => move('forward'));
-  document.getElementById('rotate-right').addEventListener('click', () => rotate('right'));
-  document.getElementById('move-left').addEventListener('click', () => move('left'));
-  document.getElementById('move-back').addEventListener('click', () => move('back'));
-  document.getElementById('move-right').addEventListener('click', () => move('right'));
+function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
+  let isDragging = false;
+  let previousMousePosition = {
+    x: 0,
+    y: 0,
+  };
+  document.getElementById('move-up').addEventListener('click', () => move('up', camera));
+  document.getElementById('move-down').addEventListener('click', () => move('down', camera));
+  document.getElementById('focusButton').addEventListener('click', () => focusCamera(camera));
+  document.getElementById('rotate-left').addEventListener('click', () => rotate('left', camera));
+  document.getElementById('move-forward').addEventListener('click', () => move('forward', camera));
+  document.getElementById('rotate-right').addEventListener('click', () => rotate('right', camera));
+  document.getElementById('move-left').addEventListener('click', () => move('left', camera));
+  document.getElementById('move-back').addEventListener('click', () => move('back', camera));
+  document.getElementById('move-right').addEventListener('click', () => move('right', camera));
+  document.addEventListener('mousedown', (event) => {
+    if (event.button === 1) {
+      focusCamera(camera);
+    }
+    isDragging = true;
+    previousMousePosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+  });
+  document.addEventListener('mousemove', (event) => {
+    if (!isDragging) return;
+
+    const deltaMove = {
+      x: event.clientX - previousMousePosition.x,
+      y: event.clientY - previousMousePosition.y,
+    };
+    const sensitivity = 0.002; 
+    rotate('left', camera, deltaMove.x * sensitivity);
+    rotate('up', camera, deltaMove.y * sensitivity);
+    previousMousePosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+  });
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+}
+function focusCamera(camera) {
+  camera.lookAt(0,0,0);
 }
 
-function rotate(direction) {
-  const rotateSpeed = 0.02;
-
+function rotate(direction, object, rotateSpeed=0.02) {
   switch (direction) {
     case 'left':
-      rotateCamera(camera, -rotateSpeed);
+      rotateObject(object, rotateSpeed);
       break;
     case 'right':
-      rotateCamera(camera, rotateSpeed);
+      rotateObject(object, -rotateSpeed);
       break;
+    case 'up':
+      rotateObjectY(object, rotateSpeed);
+      break;
+
   }
 }
 
-function move(direction) {
+function move(direction, object) {
   const moveSpeed = 0.1;
-  const rightVector = getRightVector(camera).normalize().multiplyScalar(moveSpeed);
+  const rightVector = getRightVector(object).normalize().multiplyScalar(moveSpeed);
 
   switch (direction) {
+    case 'up':
+      object.position.y += object.getWorldDirection(new THREE.Vector3()).x * moveSpeed;
+      break;
+    case 'down':
+      object.position.y += object.getWorldDirection(new THREE.Vector3()).x * -moveSpeed;
+      break;
     case 'forward':
-      moveCamera(camera, camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(moveSpeed));
+      object.position.x += object.getWorldDirection(new THREE.Vector3()).x * moveSpeed;
+      object.position.z += object.getWorldDirection(new THREE.Vector3()).z * moveSpeed;
+      //moveObject(object, object.getWorldDirection(new THREE.Vector3()).multiplyScalar(moveSpeed));
       break;
     case 'back':
-      moveCamera(camera, camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(-moveSpeed));
+      object.position.x += object.getWorldDirection(new THREE.Vector3()).x * -moveSpeed;
+      object.position.z += object.getWorldDirection(new THREE.Vector3()).z * -moveSpeed;
+      //moveObject(object, object.getWorldDirection(new THREE.Vector3()).multiplyScalar(-moveSpeed));
       break;
     case 'left':
-      moveCamera(camera, rightVector.clone().multiplyScalar(-1));
+      moveObject(object, rightVector.clone().multiplyScalar(-1));
       break;
     case 'right':
-      moveCamera(camera, rightVector);
+      moveObject(object, rightVector);
       break;
   }
 }
 
-function moveCamera(camera, direction) {
-  camera.position.add(direction);
+function moveObject(object, direction) {
+  object.position.add(direction);
 }
 
-function rotateCamera(camera, angle) {
-  camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), angle);
-}
-
-function getRightVector(camera) {
+function getRightVector(object) {
   const rightVector = new THREE.Vector3();
-  camera.getWorldDirection(rightVector).cross(camera.up);
+  object.getWorldDirection(rightVector).cross(object.up);
   return rightVector;
 }
 
-/*
-function setupKeyboardListeners(camera, moveSpeed, rotateSpeed) {
-  window.addEventListener('keydown', function(event) {
-    const key = event.key.toLowerCase();
-    const rightVector = new THREE.Vector3();
-    camera.getWorldDirection(rightVector).cross(camera.up).normalize().multiplyScalar(moveSpeed);
-    switch(key) {
-      case 'arrowup':
-      case 'w':
-        camera.position.x += camera.getWorldDirection(new THREE.Vector3()).x * moveSpeed;
-        camera.position.z += camera.getWorldDirection(new THREE.Vector3()).z * moveSpeed;
-        break;
-      case 'arrowdown':
-      case 's':
-        camera.position.x -= camera.getWorldDirection(new THREE.Vector3()).x * moveSpeed;
-        camera.position.z -= camera.getWorldDirection(new THREE.Vector3()).z * moveSpeed;
-        break;
-      case 'arrowleft':
-      case 'a':
-        camera.position.sub(rightVector);
-        break;
-      case 'arrowright':
-      case 'd':
-        camera.position.add(rightVector);
-        break;
-      case 'e':
-        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -rotateSpeed);
-        break;
-      case 'q':
-        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotateSpeed);
-        break;
-    }
-  });
+function rotateObject(object, angle) {
+  object.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), angle);
 }
-
-function setupMouseListeners(camera, moveSpeed, rotateSpeed) {
-  document.getElementById('rotate-left').addEventListener('click', () => {
-    camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -rotateSpeed);
-  });
-  document.getElementById('move-forward').addEventListener('click', () => {
-    camera.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(moveSpeed));
-  });
-  document.getElementById('rotate-right').addEventListener('click', () => {
-    camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotateSpeed);
-  });
-  document.getElementById('move-left').addEventListener('click', () => {
-    const rightVector = new THREE.Vector3();
-    camera.getWorldDirection(rightVector).cross(camera.up).normalize().multiplyScalar(moveSpeed);
-    camera.position.sub(rightVector);
-  });
-  document.getElementById('move-back').addEventListener('click', () => {
-    camera.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(-moveSpeed));
-  });
-  document.getElementById('move-right').addEventListener('click', () => {
-    const rightVector = new THREE.Vector3();
-    camera.getWorldDirection(rightVector).cross(camera.up).normalize().multiplyScalar(moveSpeed);
-    camera.position.add(rightVector);
-  });
+function rotateObjectY(object, angle) {
+  object.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), angle);
 }
-*/
-
-export function setupEventListeners(camera) {
+export function setupEventListeners(camera, scene) {
   const moveSpeed = 0.1;
   const rotateSpeed = 0.02;
 
-  setupKeyboardListeners(camera, moveSpeed, rotateSpeed);
-  setupMouseListeners(camera, moveSpeed, rotateSpeed);
+//  setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene);
+//  setupMouseListeners(camera, moveSpeed, rotateSpeed, scene);
 }
-
