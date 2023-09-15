@@ -1,0 +1,45 @@
+
+body {
+    font-family: 'FORTSSH' !important;
+}
+body {
+	margin: 0px;
+	height: 300vh;
+}
+#canvas {
+	position: fixed;
+	display: block;
+	top:0;
+	left:0;
+	z-index: 0;
+}
+#logo {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	z-index: 99;
+	width: 300px;
+}
+#logo.small {
+	width: 150px;
+}
+#logo img {
+	width: 100%;
+}
+#lichtwuerfel {
+	position: absolute;
+	top:800px;
+	left:10px;
+	z-index: 99;
+}
+#lightcube {
+	position: absolute;
+	left:10px;
+	top: 1600px; 	
+}
+.bg-opacity-50 {
+	opacity: 0.5;
+}
+.btn-sm {
+	width: 42px;
+}
