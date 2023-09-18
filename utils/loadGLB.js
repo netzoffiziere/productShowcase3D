@@ -1,9 +1,7 @@
-import { GLTFLoader } from '../../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-
+import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
   const url = `./assets/models/${currentProduct}.glb`;
   
-  // Überprüfen, ob die Datei existiert
   let response;
   try {
     response = await fetch(url, { method: 'HEAD' });
@@ -17,7 +15,9 @@ export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
   }
   
   return new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
+  console.log('GLTF promise1');
+  const loader = new GLTFLoader();
+  console.log('GLTF promise2');
     loader.load(
       url,
       (gltf) => {
@@ -33,27 +33,3 @@ export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
   });
 };
 
-
-/*
-
-export const loadGLB = (scene, finalizeSetup, currentProduct) => {
-  console.log('Start: loadGLB');
-  const url = `./assets/models/${currentProduct}.glb`;
-
-  const loader = new GLTFLoader();
-  return new Promise((resolve, reject) => {
-    loader.load(
-      `./assets/models/${currentProduct}.glb`, 
-      (gltf) => {
-        scene.add(gltf.scene);
-        resolve(true);
-      }, 
-      undefined, 
-      (err) => {
-        console.error(`Konnte ${currentProduct}.glb nicht laden: ${err}`);
-        reject(false);
-       }
-    );
-  });
-};
-*/

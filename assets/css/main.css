@@ -1,6 +1,5 @@
-
 body {
-    font-family: 'FORTSSH' !important;
+    font-family: 'Courier New', Tahoma', sans-serif;
 }
 body {
 	margin: 0px;
@@ -42,4 +41,7 @@ body {
 }
 .btn-sm {
 	width: 42px;
+}
+.modal-dialog {
+  transition: all 0.3s ease-in-out;
 }

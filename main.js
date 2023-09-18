@@ -1,62 +1,110 @@
 console.log('NEOF: productShowcase3D.js');
-
 const bodyElement = document.querySelector('body');
 const DEBUG = bodyElement.hasAttribute('data-debug');
 const currentProduct = bodyElement.getAttribute('data-current-product');
 const glbExists = bodyElement.getAttribute('data-glb-exists') === 'true';
 const modelExists = bodyElement.getAttribute('data-model-exists') === 'true';
+import * as THREE from '../node_modules/three/build/three.module.js';
+window.THREE = THREE;
+let version = 0.1;
+if(DEBUG) {
+  version = new Date().getTime();
+}
+let renderer, scene, camera;
+let setupCamera, updateCameraPosition, updateCameraRotation;
+let addLight, addLightToDOMList;
+let updateInfoPanel, initEventListeners;
+let setupEventListeners;
+
+async function loadModules(version) {
+  try {
+    const loadGLBModule = await import(`./utils/loadGLB.js?version=${version}`);
+    window.loadGLB = loadGLBModule.loadGLB;
+
+    const cameraModule = await import(`./utils/camera.js?${version}`);
+    ({ setupCamera, updateCameraPosition, updateCameraRotation } = cameraModule);
+
+    const lightsModule = await import(`./utils/lights.js?${version}`);
+    ({ addLight, addLightToDOMList } = lightsModule);
+
+    const infoPanelModule = await import(`./utils/infoPanel.js?${version}`);
+    ({ updateInfoPanel, initEventListeners } = infoPanelModule);
+
+    const eventListenersModule = await import(`./utils/eventListeners.js?${version}`);
+    ({ setupEventListeners } = eventListenersModule);
+  } catch (error) {
+    console.error('Fehler beim Laden des Moduls:', error);
+  }
+}
+loadModules(version).then(() => {
+	debugLog('Imports erfolgreich');
+	renderer = new THREE.WebGLRenderer({ antialias: true });
+	scene = new THREE.Scene();
+	camera = setupCamera(THREE);
+	/*
+	const axesHelper = new THREE.AxesHelper(500);
+	scene.add(axesHelper);
+	const cameraHelper = new THREE.CameraHelper(camera);
+	scene.add(cameraHelper);
+	*/
+	// Horizontal Grid (X, Y)
+/*
+	const horizontalGridSize = 10;
+	const horizontalGridDivisions = 100;
+	const horizontalGridHelper = new THREE.GridHelper(horizontalGridSize, horizontalGridDivisions);
+	scene.add(horizontalGridHelper);
+*/
+	// Vertical Grid (X, Z)
+/*
+	const verticalGridSize = 10;
+	const verticalGridDivisions = 100;
+	const verticalGridHelper = new THREE.GridHelper(verticalGridSize, verticalGridDivisions);
+	verticalGridHelper.rotation.x = Math.PI / 2;
+	scene.add(verticalGridHelper);
+*/
+	// Depth Grid (Y, Z)
+/*
+	const depthGridSize = 10;
+	const depthGridDivisions = 100;
+	const depthGridHelper = new THREE.GridHelper(depthGridSize, depthGridDivisions);
+	depthGridHelper.rotation.z = Math.PI / 2;
+	scene.add(depthGridHelper);
+*/
+	const initialPointLight = addLight(scene, 'PointLight', { x: -5, y: 2, z: 0, lightName: 'Spot' });
+	addLightToDOMList(scene, initialPointLight);
+	const initialHemiLight = addLight(scene, 'HemisphereLight', { position: {x:0, y: -10, z:0} });
+	addLightToDOMList(scene, initialHemiLight);
+	async function loadResources(camera) {
+		let model = null;
+		try {
+			if (glbExists) {
+				const glbResult = await loadGLB(scene, finalizeSetup, currentProduct);
+			} else {
+				debugLog('Kein glb!');  
+			}
+			if (modelExists) {
+				const module = await import(`./models/${currentProduct}.js`);
+				({ model } = module);
+				model.features.forEach(feature => {
+					const featureMesh = new THREE.Mesh(feature.geometry, feature.material);
+					featureMesh.position.set(...feature.position);
+					scene.add(featureMesh);
+				});    
+			}
+			finalizeSetup(model);
+			initEventListeners(camera)
+		} catch (err) {
+			console.error(`Fehler: ${err}`);
+		}
+	}
+	loadResources(camera);
+});
+
 function debugLog(message) {
   if (DEBUG) {
     console.log(message);
   }
 }
-import * as THREE from '../node_modules/three/build/three.module.js';
-window.THREE = THREE;
-let version;
-if(DEBUG) {
-  version = new Date().getTime();
-}
-import { loadGLB } from './utils/loadGLB.js';
-import { setupCamera, updateCameraPosition, updateCameraRotation } from './utils/camera.js?$(version}';  
-import { addLights } from './utils/lights.js?$(version}';
-import { updateInfoPanel } from './utils/infoPanel.js?$(version}';
-import { setupEventListeners } from './utils/eventListeners.js?$(version}';
-debugLog('Imports erfolgreich');
-//let currentProduct = 'waermepumpe';
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-const scene = new THREE.Scene();
-const camera = setupCamera();
-/*
-const axesHelper = new THREE.AxesHelper(500);
-scene.add(axesHelper);
-const cameraHelper = new THREE.CameraHelper(camera);
-scene.add(cameraHelper);
-*/
-// Horizontal Grid (X, Y)
-const horizontalGridSize = 50;
-const horizontalGridDivisions = 100;
-const horizontalGridHelper = new THREE.GridHelper(horizontalGridSize, horizontalGridDivisions);
-scene.add(horizontalGridHelper);
-
-// Vertical Grid (X, Z)
-/*
-const verticalGridSize = 20;
-const verticalGridDivisions = 20;
-const verticalGridHelper = new THREE.GridHelper(verticalGridSize, verticalGridDivisions);
-verticalGridHelper.rotation.x = Math.PI / 2;
-scene.add(verticalGridHelper);
-*/
-// Depth Grid (Y, Z)
-/*
-const depthGridSize = 20;
-const depthGridDivisions = 20;
-const depthGridHelper = new THREE.GridHelper(depthGridSize, depthGridDivisions);
-depthGridHelper.rotation.z = Math.PI / 2;
-scene.add(depthGridHelper);
-*/
-debugLog('Variablen initialisiert');
-
 
 function finalizeSetup(model = null) {
   debugLog('Start: finalizeSetup');
@@ -66,7 +114,6 @@ function finalizeSetup(model = null) {
   }  
   camera.position.set(-5, 2, 0);
   camera.lookAt(0, 0, 0);
-  addLights(scene, camera.position);
   renderer.setClearColor(0x0a0a0a);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById('canvas').appendChild(renderer.domElement);
@@ -80,31 +127,5 @@ function rendering(renderer, scene, camera) {
   updateInfoPanel(camera);  
   renderer.render(scene, camera);
 }
-
 debugLog('Funktionen definiert');
 
-async function loadResources() {
-  let model = null;
-  try {
-    if (glbExists) {
-      const glbResult = await loadGLB(scene, finalizeSetup, currentProduct);
-    } else {
-      debugLog('Kein glb!');  
-    }
-    if (modelExists) {
-      const module = await import(`./models/${currentProduct}.js`);
-      ({ model } = module);
-      model.features.forEach(feature => {
-        const featureMesh = new THREE.Mesh(feature.geometry, feature.material);
-        featureMesh.position.set(...feature.position);
-        scene.add(featureMesh);
-      });    
-    }
-    finalizeSetup(model);
-  } catch (err) {
-    console.error(`Fehler: ${err}`);
-  }
-}
-
-loadResources();
-debugLog('Ende: productShowcase3D.js');
