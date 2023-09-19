@@ -1,3 +1,6 @@
+import { lightTypes } from '../config/lights.js';
+let selectedLightType = 'PointLight'; 
+
 function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
   /*window.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
@@ -156,10 +159,30 @@ function rotateObject(object, angle) {
 function rotateObjectY(object, angle) {
   object.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), angle);
 }
-export function setupEventListeners(camera, scene, createLightPopup) {
+export function setupEventListeners(camera, scene, gui, parentFolder, addDynamicLight) {
+  const lightTypeController = gui.add({ type: selectedLightType }, 'type', Object.keys(lightTypes));
+  lightTypeController.name('Lichtart auswählen');
+  lightTypeController.onChange(function(value) {
+    selectedLightType = value;
+  });
+  const defaultOptions = lightTypes[selectedLightType];   
+  const addLightButton = gui.add({ addLightButton: function() { 
+    const currentSelectedType = lightTypeController.getValue();
+    const defaultOptions = lightTypes[currentSelectedType];	
+    console.log(currentSelectedType); 
+    console.log(gui); 
+    console.log(scene); 
+    addDynamicLight(gui, parentFolder, scene, currentSelectedType, defaultOptions) }
+    }, 
+    'addLightButton'
+  );
+  addLightButton.name('Licht hinzufügen');
+
   const moveSpeed = 0.1;
   const rotateSpeed = 0.02;
-  document.querySelector('#addLight').addEventListener('click', (event) => createLightPopup(scene, event));
+/*  document.getElementById('addLight').addEventListener('click', function() {
+    addDynamicLight(gui, parentFolder, scene, selectedLightType, defaultOptions);
+  });*/
   setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene);
   setupMouseListeners(camera, moveSpeed, rotateSpeed, scene);
 }

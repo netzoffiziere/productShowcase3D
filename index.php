@@ -18,6 +18,7 @@
 	<link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 	<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./node_modules/dat.gui/build/dat.gui.min.js"></script>
 </head>
 <body data-current-product="<?php echo $currentProduct; ?>" data-model-exists="<?php echo $modelExists ? 'true' : 'false'; ?>" data-glb-exists="<?php echo $glbExists ? 'true' : 'false'; ?>" <?php if(DEBUG) echo 'data-debug="true"'; ?>>
 	<script type="importmap">
@@ -63,30 +64,11 @@
 					<!-- Hier werden die Objekte in der Szene dynamisch hinzugefügt -->
 				</ul>
 			</div>
-			<div class="light-panel bg-transparent border-0 flex-grow-1 p-2">
-				<h6 class="mb-2">Lichtsteuerung</h6>
-				<ul id="light-list" class="p-0">
-					<!-- Hier werden die Lichter in der Szene dynamisch hinzugefügt -->
-				</ul>
-				<button id="addLight" class="btn btn-primary mt-3"><i class="far fa-lightbulb light-icon"></i> Licht hinzufügen</button>
-			</div>
 		</div>
 	</div>
- 	<div class="modal fade" id="lightModal" tabindex="-1" aria-labelledby="lightModalLabel" aria-hidden="true">
+ 	<div class="modal fade" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="lightModalLabel">Licht hinzufügen</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form id="lightForm">
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="closeLightBtn" data-bs-dismiss="modal">Schließen</button>
-					<button type="button" class="btn btn-primary" id="addLightBtn">Licht hinzufügen</button>
-				</div>
 			</div>
 		</div>
 	</div>
