@@ -11,13 +11,13 @@ import { setupPointerLockControls, updatePointerLockControls } from './utils/poi
 
 
 window.THREE = THREE;
-let version = 0.1;
+let version = 0.2;
 if(DEBUG) {
   version = new Date().getTime();
 }
 let renderer, scene, camera;
 let setupCamera, updateCameraPosition, updateCameraRotation;
-let addLight, addLightToDOMList;
+let addLight, addLightToDOMList, createLightPopup;
 let updateInfoPanel, initEventListeners;
 let setupEventListeners;
 let controls;
@@ -31,7 +31,7 @@ async function loadModules(version) {
     ({ setupCamera, updateCameraPosition, updateCameraRotation } = cameraModule);
 
     const lightsModule = await import(`./utils/lights.js?${version}`);
-    ({ addLight, addLightToDOMList } = lightsModule);
+    ({ addLight, addLightToDOMList, createLightPopup } = lightsModule);
 
     const infoPanelModule = await import(`./utils/infoPanel.js?${version}`);
     ({ updateInfoPanel, initEventListeners } = infoPanelModule);
@@ -126,7 +126,7 @@ function finalizeSetup(model = null) {
   renderer.setClearColor(0x0a0a0a);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById('canvas').appendChild(renderer.domElement);
-  setupEventListeners(camera, scene);
+  setupEventListeners(camera, scene, createLightPopup);
   rendering(renderer, scene, camera);
   debugLog('Ende: finalizeSetup');
 }

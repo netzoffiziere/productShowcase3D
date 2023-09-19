@@ -1,89 +1,3 @@
-import { addLight, addLightToDOMList, addPreviewLight, removePreviewLight } from './lights.js';
-function createLightPopup(scene, event) {
-  const form = document.getElementById('lightForm');
-  const windowHeight = window.innerHeight;
-  const modalElement = document.getElementById('lightModal');
-  const modal = new bootstrap.Modal(document.getElementById('lightModal'));
-  
-  form.innerHTML = `
-    <div class="mb-3">
-      <label for="lightType" class="form-label">Type</label>
-      <select class="form-select" id="lightType">
-        <option value="PointLight">PointLight</option>
-        <option value="HemisphereLight">HemisphereLight</option>
-        <option value="AmbientLight">AmbientLight</option>
-      </select>
-    </div>
-    <div class="mb-3">
-      <label for="lightName" class="form-label">Name</label>
-      <input type="text" class="form-control" id="lightName">
-    </div>
-    <div class="mb-3">
-      <label for="lightPosition" class="form-label">Position</label>
-      <input type="text" class="form-control" id="lightPosition">
-    </div>
-    <div class="mb-3">
-      <label for="lightDirection" class="form-label">Fokus/Richtung</label>
-      <input type="text" class="form-control" id="lightDirection">
-    </div>
-    <div class="mb-3">
-      <label for="lightIntensity" class="form-label">Intensität</label>
-      <input type="text" class="form-control" id="lightIntensity">
-    </div>
-    <div class="mb-3">
-      <label for="lightColor" class="form-label">Farbe</label>
-      <input type="text" class="form-control" id="lightColor">
-    </div>
-  `;
-  modalElement.addEventListener('shown.bs.modal', () => {
-    const modalDialog = document.querySelector('.modal-dialog');
-    modalDialog.style.position = 'fixed';
-    modalDialog.style.left = `${event.clientX}px`;
-    modalDialog.style.top = `${event.clientY}px`;
-    const modalHeight = modalDialog.offsetHeight;
-    if ((event.clientY + modalHeight) > windowHeight) {
-      modalDialog.style.top = `${windowHeight - modalHeight - 50}px`;
-    }
-  });
-  let currentPreviewLight = addPreviewLight(scene, 'PointLight', { x: 5, y: 0, z: 5 }, null);
-  modal.show();
-  //save new light!
-  document.getElementById('addLightBtn').addEventListener('click', () => {
-    const type = document.getElementById('lightType').value;
-    const name = document.getElementById('lightName').value;
-    let light = addLight(scene, type, { lightName: name });
-    addLightToDOMList(scene, light);
-    removePreviewLight(scene);
-    modal.hide();
-  });
-  document.getElementById('closeLightBtn').addEventListener('click', () => {
-    removePreviewLight(scene);
-    modal.hide();
-  });
-  document.querySelectorAll('.form-control').forEach(input => {
-    input.addEventListener('input', (event) => {
-      const type = document.querySelector('#lightType').value;
-      const options = {
-        lightName: document.querySelector('#lightName').value,
-        x: parseFloat(document.querySelector('#lightPosition').value.split(',')[0]),
-        y: parseFloat(document.querySelector('#lightPosition').value.split(',')[1]),
-        z: parseFloat(document.querySelector('#lightPosition').value.split(',')[2]),
-        direction: document.querySelector('#lightDirection').value,  // Für spätere Verwendung
-        intensity: parseFloat(document.querySelector('#lightIntensity').value),
-        color: document.querySelector('#lightColor').value
-      };
-      currentPreviewLight = onPopupInputChange(scene, type, options); 
-    });  
-  });
-}
-
-function onPopupInputChange(scene, type, options) {
-  return addPreviewLight(scene, type, options);
-}
-function onPopupClose() {
-  removePreviewLight(scene);
-}
-
 function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
   /*window.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
@@ -240,7 +154,7 @@ function rotateObject(object, angle) {
 function rotateObjectY(object, angle) {
   object.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), angle);
 }
-export function setupEventListeners(camera, scene) {
+export function setupEventListeners(camera, scene, createLightPopup) {
   const moveSpeed = 0.1;
   const rotateSpeed = 0.02;
   document.querySelector('#addLight').addEventListener('click', (event) => createLightPopup(scene, event));
