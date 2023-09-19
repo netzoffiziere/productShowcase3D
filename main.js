@@ -5,6 +5,11 @@ const currentProduct = bodyElement.getAttribute('data-current-product');
 const glbExists = bodyElement.getAttribute('data-glb-exists') === 'true';
 const modelExists = bodyElement.getAttribute('data-model-exists') === 'true';
 import * as THREE from '../node_modules/three/build/three.module.js';
+import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
+//import { PointerLockControls } from '../node_modules/three/examples/jsm/controls/PointerLockControls.js';
+import { setupPointerLockControls, updatePointerLockControls } from './utils/pointerLockControls.js';
+
+
 window.THREE = THREE;
 let version = 0.1;
 if(DEBUG) {
@@ -15,6 +20,7 @@ let setupCamera, updateCameraPosition, updateCameraRotation;
 let addLight, addLightToDOMList;
 let updateInfoPanel, initEventListeners;
 let setupEventListeners;
+let controls;
 
 async function loadModules(version) {
   try {
@@ -41,6 +47,9 @@ loadModules(version).then(() => {
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	scene = new THREE.Scene();
 	camera = setupCamera(THREE);
+        const orbitControls = new OrbitControls(camera, renderer.domElement);
+        controls = setupPointerLockControls(camera, renderer);
+	scene.add(controls.getObject());
 	/*
 	const axesHelper = new THREE.AxesHelper(500);
 	scene.add(axesHelper);
@@ -124,8 +133,8 @@ function finalizeSetup(model = null) {
 
 function rendering(renderer, scene, camera) {
   requestAnimationFrame(() => rendering(renderer, scene, camera));
+  updatePointerLockControls(controls);
   updateInfoPanel(camera);  
   renderer.render(scene, camera);
 }
-debugLog('Funktionen definiert');
 

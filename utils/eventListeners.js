@@ -85,7 +85,7 @@ function onPopupClose() {
 }
 
 function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
-  window.addEventListener('keydown', function(event) {
+  /*window.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
     switch (key) {
       case 'arrowup':
@@ -121,8 +121,10 @@ function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
         break;
     }
   });
+  */
 }
 function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
+/*
   let isDragging = false;
   let previousMousePosition = {
     x: 0,
@@ -171,6 +173,7 @@ function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
   document.addEventListener('mouseup', () => {
     isDragging = false;
   });
+*/
 }
 function focusCamera(camera) {
   camera.lookAt(0,0,0);
