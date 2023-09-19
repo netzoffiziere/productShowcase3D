@@ -45,11 +45,13 @@ function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
     y: 0,
   };
   document.addEventListener('wheel', (event) => {
+
     const delta = -event.deltaY * 0.05;
     camera.fov += delta;
     camera.fov = Math.min(179, Math.max(0, camera.fov));
     camera.updateProjectionMatrix();
   });
+
   document.getElementById('move-up').addEventListener('click', () => move('up', camera));
   document.getElementById('move-down').addEventListener('click', () => move('down', camera));
   document.getElementById('focusButton').addEventListener('click', () => focusCamera(camera));

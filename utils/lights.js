@@ -61,7 +61,6 @@ export function addLight(scene, type = 'PointLight', options = {}, incrementCoun
   if (!defaultOptions) return null;
   const finalOptions = { ...defaultOptions, ...options };
   light = new THREE[type](...Object.values(finalOptions));
-//  lightPreview = new THREE[type](...Object.values(finalOptions));
   if(!light) return null;
   if(incrementCounter) {
     console.log('++'+lightCounter);

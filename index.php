@@ -39,9 +39,9 @@
 			<div class="control-panel bg-transparent border-0 flex-grow-0 p-2">
 				<h6 class="mb-2">Bewegungssteuerung</h6>
 				<div class="mb-2">
-					<button id="rotate-left" class="btn btn-sm btn-primary" title="q"><i class="fas fa-undo"></i></button>
+					<button id="rotate-left" class="invisible btn btn-sm btn-primary" title="q"><i class="fas fa-undo"></i></button>
 					<button id="move-forward" class="btn btn-sm btn-primary" title="w oder Arrow Up"><i class="fas fa-arrow-up"></i></button>
-					<button id="rotate-right" class="btn btn-sm btn-primary" title="e"><i class="fas fa-redo"></i></button>
+					<button id="rotate-right" class="invisible btn btn-sm btn-primary" title="e"><i class="fas fa-redo"></i></button>
 				</div>
 				<div class="mb-2">
 					<button id="move-left" class="btn btn-sm btn-primary" title="a oder Arrow Left"><i class="fas fa-arrow-left"></i></button>
@@ -49,9 +49,9 @@
 					<button id="move-right" class="btn btn-sm btn-primary" title="d oder Arrow Right"><i class="fas fa-arrow-right"></i></button>
 				</div>
 				<div class="mb-2">
-					<button id="move-up" class="btn btn-sm btn-secondary" title="r"><i class="fas fa-arrow-alt-circle-up"></i></button>
-					<button id="focusButton" class="btn btn-sm btn-primary" title="x"><i class="fas fa-crosshairs"></i></button>
-					<button id="move-down" class="btn btn-sm btn-secondary" title="f"><i class="fas fa-arrow-alt-circle-down"></i></button>
+					<button id="move-up" class="btn btn-sm btn-secondary" title="y"><i class="fas fa-arrow-alt-circle-up"></i></button>
+					<button id="focusButton" class="invisible btn btn-sm btn-primary" title="x"><i class="fas fa-crosshairs"></i></button>
+					<button id="move-down" class="btn btn-sm btn-secondary" title="c"><i class="fas fa-arrow-alt-circle-down"></i></button>
 				</div>
 			</div>
 			<div class="info-panel bg-transparent border-0 flex-grow-1 p-2">
