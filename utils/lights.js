@@ -5,7 +5,6 @@ let lightCounter = 0;
 let lightNamesCounter = {};
 
 export function addDynamicLight(gui, parentFolder, scene, type='PointLight', options={ x: 0, y: 0, z: 0 }) { 
-console.log(options);
   addLight(gui, parentFolder, scene, type, options);
 }
 
@@ -37,7 +36,7 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
   light.lightName = options.lightName || `${type}-${lightNamesCounter[type] || 1}`;
   scene.add(light);
   const folder = parentFolder.addFolder(light.lightName);
-  folder.add(light, 'intensity', 0, 2);
+  folder.add(light, 'intensity', 0, 10);
   if(type=='SpotLight') {
     
   }
@@ -49,6 +48,19 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     folder.addColor({ color: colorHex }, 'color').onChange((color) => {
       light.color.set(color);
     });
+  }
+  if(light.position && type == 'PointLight') {
+    const lightSymbolGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+    console.log(light.color);
+    const lightSymbolMaterial = new THREE.MeshBasicMaterial({ color: light.color });
+    const lightSymbolMesh = new THREE.Mesh(lightSymbolGeometry, lightSymbolMaterial);
+    lightSymbolMesh.position.copy(light.position);
+    scene.add(lightSymbolMesh);
+  }
+  if(light.position && (type !== 'AmbientLight' && type !== 'HemisphereLight')) {
+    folder.add(light.position, 'x', -50, 50);
+    folder.add(light.position, 'y', -50, 50);
+    folder.add(light.position, 'z', -50, 50);
   }
   if (light.groundColor && light.groundColor.isColor) {
     if(options.groundColor) {
@@ -96,11 +108,6 @@ console.log(value);
       light.shadow.map.dispose();
       light.shadow.map = null;
     });
-  }
-  if(light.position && (type !== 'AmbientLight' && type !== 'HemisphereLight')) {
-    folder.add(light.position, 'x', -50, 50);
-    folder.add(light.position, 'y', -50, 50);
-    folder.add(light.position, 'z', -50, 50);
   }
 
   folder.add({ remove: () => removeLightFromGUIAndScene(gui, scene, light) }, 'remove');
