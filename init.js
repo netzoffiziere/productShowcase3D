@@ -17,20 +17,20 @@ export function getConfig() {
 
 export async function loadModules(version) {
 	try {
-		const loadGLBModule = await import(`./utils/loadGLB.js?version=${version}`);
+		const loadGLBModule = await import(`./utils/loadGLB.js`);
 		window.loadGLB = loadGLBModule.loadGLB;
-		const cameraModule = await import(`./utils/camera.js?${version}`);
+		const cameraModule = await import(`./utils/camera.js`);
 		config.setupCamera = cameraModule.setupCamera;
 		config.updateCameraPosition = cameraModule.updateCameraPosition;
 		config.updateCameraRotation = cameraModule.updateCameraRotation;
- 		const lightsModule = await import(`./utils/lights.js?${version}`);
+ 		const lightsModule = await import(`./utils/lights.js`);
 		config.addLight = lightsModule.addLight;
-		const infoPanelModule = await import(`./utils/infoPanel.js?${version}`);
+		const infoPanelModule = await import(`./utils/infoPanel.js`);
 		config.updateInfoPanel = infoPanelModule.updateInfoPanel;
 		config.initEventListeners = infoPanelModule.initEventListeners;
-		const eventListenersModule = await import(`./utils/eventListeners.js?${version}`);
+		const eventListenersModule = await import(`./utils/eventListeners.js`);
 		config.setupEventListeners = eventListenersModule.setupEventListeners;
-		const controlsModule = await import(`./utils/pointerLockControls.js?${version}`);
+		const controlsModule = await import(`./utils/pointerLockControls.js`);
 		config.setupPointerLockControls = controlsModule.setupPointerLockControls;
 		config.updatePointerLockControls = controlsModule.updatePointerLockControls;
 	} catch (error) {

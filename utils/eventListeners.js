@@ -41,6 +41,7 @@ function setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene) {
   */
 }
 function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
+  document.getElementById('focusButton').addEventListener('click', () => focusCamera(camera));
 /*
   let isDragging = false;
   let previousMousePosition = {
@@ -57,7 +58,6 @@ function setupMouseListeners(camera, moveSpeed, rotateSpeed, scene) {
 
   document.getElementById('move-up').addEventListener('click', () => move('up', camera));
   document.getElementById('move-down').addEventListener('click', () => move('down', camera));
-  document.getElementById('focusButton').addEventListener('click', () => focusCamera(camera));
   document.getElementById('rotate-left').addEventListener('click', () => rotate('left', camera));
   document.getElementById('move-forward').addEventListener('click', () => move('forward', camera));
   document.getElementById('rotate-right').addEventListener('click', () => rotate('right', camera));

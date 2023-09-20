@@ -13,11 +13,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Lichtwürfel</title>
-	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+	<!--script src="node_modules/jquery/dist/jquery.min.js"></script>
 	<link rel="stylesheet" href="./assets/css/main.css<?php if(DEBUG) echo '?no_cache='.time(); ?>">
 	<link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
-	<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script-->
 	<script type="text/javascript" src="./node_modules/dat.gui/build/dat.gui.min.js"></script>
 </head>
 <body data-current-product="<?php echo $currentProduct; ?>" data-model-exists="<?php echo $modelExists ? 'true' : 'false'; ?>" data-glb-exists="<?php echo $glbExists ? 'true' : 'false'; ?>" <?php if(DEBUG) echo 'data-debug="true"'; ?>>
@@ -51,7 +51,7 @@
 				</div>
 				<div class="mb-2">
 					<button id="move-up" class="btn btn-sm btn-secondary" title="y"><i class="fas fa-arrow-alt-circle-up"></i></button>
-					<button id="focusButton" class="invisible btn btn-sm btn-primary" title="x"><i class="fas fa-crosshairs"></i></button>
+					<button id="focusButton" class="btn btn-sm btn-primary" title="x"><i class="fas fa-crosshairs"></i></button>
 					<button id="move-down" class="btn btn-sm btn-secondary" title="c"><i class="fas fa-arrow-alt-circle-down"></i></button>
 				</div>
 			</div>
@@ -72,6 +72,6 @@
 			</div>
 		</div>
 	</div>
-	<script defer type="module" src="./main.js<?php if(DEBUG) echo '?no_cache='.time(); ?>"></script>
+	<script defer type="module" src="./dist/bundle.js<?php if(DEBUG) echo '?no_cache='.time(); ?>"></script>
 </body>
 </html>

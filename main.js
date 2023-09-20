@@ -8,6 +8,12 @@ import { config, initializeConfig, getConfig, loadModules, loadResources, finali
 import { addDynamicLight } from './utils/lights.js';
 import { lightTypes } from './config/lights.js';
 import { debugLog } from './utils/debug.js';
+import 'jquery';
+import 'bootstrap';
+import './assets/css/main.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 const bodyElement = document.querySelector('body');
 initializeConfig(bodyElement);
 const { DEBUG, currentProduct, modelExists } = getConfig();
@@ -36,6 +42,7 @@ loadModules(version).then(() => {
 	
 	const gui = new dat.GUI();
 	const lightFolder = gui.addFolder('Lichtquellen');
+	const objFolder = gui.addFolder('Objekte');
 	
 	const initialHemiLight = config.addLight(gui, lightFolder, scene, 'HemisphereLight', { lightName: 'Hemisphere', intensity: 0.1 });
 	const initialPointLight1 = config.addLight(gui, lightFolder, scene, 'PointLight', { position: {x:2,y:2,z:0}, color: '0xFFD700', intensity: 1.0, distance: 10, decay: 2, castShadow: true });
@@ -47,6 +54,36 @@ loadModules(version).then(() => {
 	config.initEventListeners(camera);
 
 	lightFolder.open();
+
+// Sonne
+const sunGeometry = new THREE.SphereGeometry(10000, 32, 32);
+const sunMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+
+const light = new THREE.PointLight(0xffffff);
+light.position.set(0, 0, 0);
+sun.add(light);
+
+// Erde und Raum
+const earthGroup = new THREE.Group();
+const earthGeometry = new THREE.SphereGeometry(1000, 32, 32);
+const earthMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff});
+const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+earthGroup.position.set(72000,72000,72000);
+earthGroup.add(earth);
+
+const roomGeometry = new THREE.BoxGeometry(10, 10, 10);
+const roomMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+const room = new THREE.Mesh(roomGeometry, roomMaterial);
+room.position.set(0, 0, 1000);
+earthGroup.add(room);
+
+const sunGroup = new THREE.Group();
+sunGroup.add(sun);
+sunGroup.add(earthGroup);
+
+scene.add(sunGroup);
+console.log('sun added');
 
         const geometry = new THREE.PlaneGeometry(10, 10);
         const material = new THREE.MeshStandardMaterial({color: 0xA0AAA0, side: THREE.DoubleSide});

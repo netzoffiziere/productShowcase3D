@@ -1,7 +1,5 @@
 body {
-    font-family: 'Courier New', Tahoma', sans-serif;
-}
-body {
+	font-family: 'Courier New', Tahoma, sans-serif;
 	margin: 0px;
 	height: 300vh;
 }
@@ -43,5 +41,5 @@ body {
 	width: 42px;
 }
 .modal-dialog {
-  transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
