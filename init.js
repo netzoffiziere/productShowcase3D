@@ -47,13 +47,9 @@ export async function loadResources(scene, camera, renderer) {
 			debugLog('Kein glb!');
 		}
 		if (modelExists) {
-			const module = await import(`./models/${currentProduct}.js`);
-			({ model } = module);
-			model.features.forEach(feature => {
-				const featureMesh = new THREE.Mesh(feature.geometry, feature.material);
-				featureMesh.position.set(...feature.position);
-				scene.add(featureMesh);
-			});
+       			const module = await import(`./models/${currentProduct}.js`);
+		        const { createModel } = module;
+		        createModel(scene);
 		}
 		finalizeSetup(scene, camera, renderer, model = null);
 	} catch (err) {
@@ -66,7 +62,7 @@ export function finalizeSetup(scene, camera, renderer, model = null) {
 		const mainObject = new THREE.Mesh(model.geometry, model.material);
 		scene.add(mainObject);
 	}
-	camera.position.set(-5, 2, 0);
+	camera.position.set(-0.4, 0.1, 0);
 	camera.lookAt(0, 0, 0);
 	renderer.setClearColor(0x0a0a0a);
 	renderer.setSize(window.innerWidth, window.innerHeight);

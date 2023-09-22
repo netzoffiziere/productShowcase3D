@@ -3,7 +3,7 @@
     $currentProduct = $_GET['currentProduct'] ?? 'default';
     $glbPath = "./assets/models/$currentProduct.glb";
     $glbExists = file_exists($glbPath);
-    $modelPath = "./js/models/$currentProduct.js";
+    $modelPath = "./models/$currentProduct.js";
     $modelExists = file_exists($modelPath);
 ?>
 <!DOCTYPE html>

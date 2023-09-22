@@ -13,16 +13,19 @@ export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
     console.log('GLB: Datei nicht gefunden, ignoriert');
     return Promise.resolve(false);
   }
-  
   return new Promise((resolve, reject) => {
-  console.log('GLTF promise1');
   const loader = new GLTFLoader();
-  console.log('GLTF promise2');
     loader.load(
       url,
       (gltf) => {
-        scene.add(gltf.scene);
-        resolve(true);
+   gltf.scene.traverse(setReceiveShadow);
+    gltf.scene.traverse(setSpecificShadows);
+    gltf.scene.scale.set(0.1, 0.1, 0.1);
+    gltf.scene.position.y = -0.04;
+    console.log(gltf.scene);
+    scene.add(gltf.scene);
+    console.log("Modell zur Szene hinzugefügt.");
+    resolve(true);
       },
       undefined,
       (err) => {
@@ -32,4 +35,19 @@ export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
     );
   });
 };
+function setSpecificShadows(object) {
+  const targetNames = ["Stamm_-_Teil_2", "Stamm_-_Teil_3", "Stamm_-_Teil_6"];
+  if (object.isMesh && targetNames.includes(object.name)) {
+    object.castShadow = true;
+    object.receiveShadow = true;
+  }
+  object.children.forEach(setSpecificShadows);
+}
+function setReceiveShadow(object) {
+	if (object.isMesh) {
+    		object.castShadow = true;
+		object.receiveShadow = true;
+	}
+	object.children.forEach(setReceiveShadow);
+}
 

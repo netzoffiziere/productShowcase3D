@@ -3,12 +3,26 @@ import * as THREE from 'three';
 
 let lightCounter = 0;
 let lightNamesCounter = {};
+const lightSymbolMeshes = {};
 
-export function addDynamicLight(gui, parentFolder, scene, type='PointLight', options={ x: 0, y: 0, z: 0 }) { 
-  addLight(gui, parentFolder, scene, type, options);
+function updateLightSymbol(light) {
+	const lightSymbolMesh = lightSymbolMeshes[light.lightName];
+	if (lightSymbolMesh) {
+		lightSymbolMesh.position.set(light.position.x, light.position.y, light.position.z);
+		light.position.copy(lightSymbolMesh.position);
+	}
 }
 
-export function addLight(gui, parentFolder, scene, type = 'PointLight', options = {}) {
+function createLightSymbol(scene, light, geometry) {
+	const material = new THREE.MeshBasicMaterial({ color: light.color });
+	const mesh = new THREE.Mesh(geometry, material);
+	mesh.position.copy(light.position);
+	mesh.name = light.lightName;
+	scene.add(mesh);
+	lightSymbolMeshes[light.lightName] = mesh;
+}
+
+export function addLight(gui, parentFolder, scene, type = 'PointLight', options = { position: {x:5,y:5,z:5}}) {
   const defaultOptions = lightTypes[type];
   options = { ...defaultOptions, ...options };
   const light = new THREE[type](options);
@@ -21,7 +35,7 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
         } 
 	break;
       case 'color':
-        console.log(key+' : '+options[key]);
+        //console.log(key+' : '+options[key]);
         break;
       default:
         light[key] = options[key];
@@ -35,8 +49,13 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
   }
   light.lightName = options.lightName || `${type}-${lightNamesCounter[type] || 1}`;
   scene.add(light);
+  
   const folder = parentFolder.addFolder(light.lightName);
-  folder.add(light, 'intensity', 0, 10);
+  if(light.lightName=='Sonne') {
+    folder.add(light, 'intensity', 0, 100000);
+  } else { 
+    folder.add(light, 'intensity', 0, 10);
+  }
   if(type=='SpotLight') {
     
   }
@@ -47,21 +66,34 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     const colorHex = '#' + light.color.getHexString();
     folder.addColor({ color: colorHex }, 'color').onChange((color) => {
       light.color.set(color);
+      const lightSymbolMesh = lightSymbolMeshes[light.lightName];
+        if (lightSymbolMesh) {
+          lightSymbolMesh.material.color.set(color);
+        }
     });
   }
-  if(light.position && type == 'PointLight') {
-    const lightSymbolGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-    console.log(light.color);
-    const lightSymbolMaterial = new THREE.MeshBasicMaterial({ color: light.color });
-    const lightSymbolMesh = new THREE.Mesh(lightSymbolGeometry, lightSymbolMaterial);
-    lightSymbolMesh.position.copy(light.position);
-    scene.add(lightSymbolMesh);
+  if(light.position) {
+	switch(type) {
+		case 'PointLight':
+			if (light.lightName == 'Sonne') {
+				createLightSymbol(scene, light, new THREE.SphereGeometry(4000, 32, 32));
+			} else {
+				createLightSymbol(scene, light, new THREE.SphereGeometry(0.002, 32, 32));
+			}
+			break;
+		case 'SpotLight':
+			createLightSymbol(scene, light, new THREE.ConeGeometry(0.001, 0.002, 32));
+			break;
+		default:
+			break;
+	}
   }
+
   if(light.position && (type !== 'AmbientLight' && type !== 'HemisphereLight')) {
-    folder.add(light.position, 'x', -50, 50);
-    folder.add(light.position, 'y', -50, 50);
-    folder.add(light.position, 'z', -50, 50);
-  }
+	folder.add(light.position, 'x', -50, 50).onChange(() => updateLightSymbol(light));
+	folder.add(light.position, 'y', -50, 50).onChange(() => updateLightSymbol(light));
+	folder.add(light.position, 'z', -50, 50).onChange(() => updateLightSymbol(light));
+  }  
   if (light.groundColor && light.groundColor.isColor) {
     if(options.groundColor) {
  	light.groundColor.setHex(options.groundColor);
@@ -72,12 +104,16 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     });
   }
   if(light.distance) {
-    folder.add(light, 'distance', 0, 100).name('Distance').onChange((value) => {
-      light.distance = value;
-    });
+	let maxDistance = 100;
+	if(light.lightName=='Sonne') {
+		maxDistance = 100000;
+	}
+	folder.add(light, 'distance', 0, maxDistance).name('Distance').onChange((value) => {
+		light.distance = value;
+	});
   }
   if(light.decay) {
-    folder.add(light, 'decay', 0, 10).name('Decay').onChange((value) => {
+    folder.add(light, 'decay', 0, 2).name('Decay').onChange((value) => {
       light.decay = value;
     });
   }
@@ -94,21 +130,23 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
       light.penumbra = value;
     });
   } 
-  if(light.castShadow&&!light.castShadow) {
-console.log(light.castShadow);
+  if(light instanceof THREE.PointLight) {
     folder.add(light, 'castShadow').name('Schatten werfen').onChange((value) => {
-console.log(value);
       light.castShadow = value;
-      if (value) {
+  /*    if (value) {
         light.shadow.mapSize.width = 1024;
         light.shadow.mapSize.height = 1024;
         light.shadow.camera.near = 0.5;
-        light.shadow.camera.far = 500;
+        light.shadow.camera.far = 72500;
       }
-      light.shadow.map.dispose();
-      light.shadow.map = null;
+    */
+//      light.shadow.map.dispose();
+  //    light.shadow.map = null;
     });
   }
+  folder.add(light, 'receiveShadow').name('Schatten empfangen').onChange((value) => {
+    light.receiveShadow = value;
+  });
 
   folder.add({ remove: () => removeLightFromGUIAndScene(gui, scene, light) }, 'remove');
   return light;
@@ -116,8 +154,6 @@ console.log(value);
 
 export function removeLightFromGUIAndScene(gui, scene, light) {
   scene.remove(light);
-  console.log('removeLight'+light);
-  console.log(scene);
 
   const parentFolder = gui.__folders['Lichtquellen'];
   if (parentFolder) {

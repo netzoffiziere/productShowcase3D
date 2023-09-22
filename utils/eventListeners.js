@@ -159,7 +159,7 @@ function rotateObject(object, angle) {
 function rotateObjectY(object, angle) {
   object.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), angle);
 }
-export function setupEventListeners(camera, scene, gui, parentFolder, addDynamicLight) {
+export function setupEventListeners(camera, scene, gui, parentFolder, addLight) {
   const lightTypeController = parentFolder.add({ type: selectedLightType }, 'type', Object.keys(lightTypes));
   lightTypeController.name('Lichtart auswählen');
   lightTypeController.onChange(function(value) {
@@ -169,7 +169,7 @@ export function setupEventListeners(camera, scene, gui, parentFolder, addDynamic
   const addLightButton = parentFolder.add({ addLightButton: function() { 
     const currentSelectedType = lightTypeController.getValue();
     const defaultOptions = lightTypes[currentSelectedType];	
-    addDynamicLight(gui, parentFolder, scene, currentSelectedType, defaultOptions) }
+    addLight(gui, parentFolder, scene, currentSelectedType, defaultOptions) }
     }, 
     'addLightButton'
   );
@@ -177,8 +177,8 @@ export function setupEventListeners(camera, scene, gui, parentFolder, addDynamic
 
   const moveSpeed = 0.1;
   const rotateSpeed = 0.02;
-/*  document.getElementById('addLight').addEventListener('click', function() {
-    addDynamicLight(gui, parentFolder, scene, selectedLightType, defaultOptions);
+  /*document.getElementById('addLight').addEventListener('click', function() {
+    addLight(gui, parentFolder, scene, selectedLightType, defaultOptions);
   });*/
   setupKeyboardListeners(camera, moveSpeed, rotateSpeed, scene);
   setupMouseListeners(camera, moveSpeed, rotateSpeed, scene);
