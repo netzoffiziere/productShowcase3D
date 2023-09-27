@@ -3,7 +3,7 @@
     $currentProduct = $_GET['currentProduct'] ?? 'default';
     $glbPath = "./assets/models/$currentProduct.glb";
     $glbExists = file_exists($glbPath);
-    $modelPath = "./models/$currentProduct.js";
+    $modelPath = "./welten/models/$currentProduct.js";
     $modelExists = file_exists($modelPath);
 ?>
 <!DOCTYPE html>
@@ -35,7 +35,7 @@
 		<img src="./assets/img/logo_transparent.png" />
 	</div>
 	<div id="canvas"></div>
-	<div class="container-fluid">
+	<div id="hud" class="container-fluid">
 		<div class="fixed-bottom bg-dark d-flex justify-content-between p-2 text-white bg-opacity-50">
 			<div class="control-panel bg-transparent border-0 flex-grow-0 p-2">
 				<h6 class="mb-2">Bewegungssteuerung</h6>

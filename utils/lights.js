@@ -1,6 +1,5 @@
 import { lightTypes } from '../config/lights.js';
 import * as THREE from 'three'; 
-
 let lightCounter = 0;
 let lightNamesCounter = {};
 const lightSymbolMeshes = {};
@@ -14,6 +13,9 @@ function updateLightSymbol(light) {
 }
 
 function createLightSymbol(scene, light, geometry) {
+console.log('CreateLightSymbol');
+console.log(scene);
+console.log(light);
 	const material = new THREE.MeshBasicMaterial({ color: light.color });
 	const mesh = new THREE.Mesh(geometry, material);
 	mesh.position.copy(light.position);
@@ -22,7 +24,8 @@ function createLightSymbol(scene, light, geometry) {
 	lightSymbolMeshes[light.lightName] = mesh;
 }
 
-export function addLight(gui, parentFolder, scene, type = 'PointLight', options = { position: {x:5,y:5,z:5}}) {
+export function addLight(gui, parentFolder, type = 'PointLight', options = { position: {x:5,y:5,z:5}}) {
+console.log('addLight:'+type);
   const defaultOptions = lightTypes[type];
   options = { ...defaultOptions, ...options };
   const light = new THREE[type](options);
@@ -48,8 +51,8 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     lightNamesCounter[type]++;
   }
   light.lightName = options.lightName || `${type}-${lightNamesCounter[type] || 1}`;
-  scene.add(light);
-  
+  this.scene.add(light);
+ console.log('light added to scene'); 
   const folder = parentFolder.addFolder(light.lightName);
   if(light.lightName=='Sonne') {
     folder.add(light, 'intensity', 0, 100000);
@@ -63,26 +66,32 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     if(options.color) {
  	light.color.setHex(options.color);
     }
-    const colorHex = '#' + light.color.getHexString();
+  console.log('colorHex:' +light.color);
+  const colorHex = '#' + light.color.getHexString();
+  console.log(colorHex);
     folder.addColor({ color: colorHex }, 'color').onChange((color) => {
+  console.log(colorHex);
       light.color.set(color);
       const lightSymbolMesh = lightSymbolMeshes[light.lightName];
         if (lightSymbolMesh) {
+console.log('lightSymbolMesh');
+console.log(lightSymbolMesh);
           lightSymbolMesh.material.color.set(color);
         }
     });
   }
   if(light.position) {
+console.log(light.position + ' :: ' +type);
 	switch(type) {
 		case 'PointLight':
 			if (light.lightName == 'Sonne') {
-				createLightSymbol(scene, light, new THREE.SphereGeometry(4000, 32, 32));
+				createLightSymbol(this.scene, light, new THREE.SphereGeometry(4000, 32, 32));
 			} else {
-				createLightSymbol(scene, light, new THREE.SphereGeometry(0.002, 32, 32));
+				createLightSymbol(this.scene, light, new THREE.SphereGeometry(0.002, 32, 32));
 			}
 			break;
 		case 'SpotLight':
-			createLightSymbol(scene, light, new THREE.ConeGeometry(0.001, 0.002, 32));
+			createLightSymbol(this.scene, light, new THREE.ConeGeometry(0.001, 0.002, 32));
 			break;
 		default:
 			break;
@@ -148,7 +157,7 @@ export function addLight(gui, parentFolder, scene, type = 'PointLight', options 
     light.receiveShadow = value;
   });
 
-  folder.add({ remove: () => removeLightFromGUIAndScene(gui, scene, light) }, 'remove');
+  folder.add({ remove: () => removeLightFromGUIAndScene(gui, this.scene, light) }, 'remove');
   return light;
 }
 

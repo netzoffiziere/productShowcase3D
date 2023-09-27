@@ -1,0 +1,100 @@
+{
+  "csm": {
+    "maxFar": 1000,
+    "near": 0.01,
+    "lightNear": 0.01,
+    "mode": "practical",
+    "fade": false,
+    "cascades": 8,
+    "shadowMapSize": 4096,
+    "lightDirection": [0, -2, 0],
+    "shadowBias": 0,
+    "lightIntensity": 0.1
+  },
+  "controls": {
+    "type": "PointerLockControls"
+  },
+  "objects": [
+    {
+      "type": "Group",
+      "name": "Gruppe: Sonne",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Sonne",
+          "geometry": {
+            "radius": 4096,
+            "widthSegments": 32,
+            "heightSegments": 32
+          },
+          "material": {
+            "type": "sunMaterial",
+            "setupFunction": "csm.setupMaterial"
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "name": "Gruppe: Erde",
+      "position": {
+        "x": 0,
+        "y": 32768,
+        "z": 0
+      },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Erde",
+          "geometry": {
+            "radius": 512,
+            "widthSegments": 32,
+            "heightSegments": 32
+          },
+          "material": {
+            "type": "MeshPhongMaterial",
+            "color": "0x1565C0",
+            "specular": "0x111111",
+            "shininess": 30,
+            "setupFunction": "csm.setupMaterial"
+          },
+          "position": {
+            "x": 0,
+            "y": -512,
+            "z": 0
+          },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Himmel",
+          "geometry": {
+            "radius": 544,
+            "widthSegments": 32,
+            "heightSegments": 32
+          },
+          "material": {
+            "type": "ShaderMaterial"
+          },
+          "position": {
+            "x": 0,
+            "y": -528,
+            "z": 0
+          }
+        }
+      ]
+    }
+  ]
+}
+

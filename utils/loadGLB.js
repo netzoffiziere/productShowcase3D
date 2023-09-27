@@ -22,7 +22,6 @@ export const loadGLB = async (scene, finalizeSetup, currentProduct) => {
     gltf.scene.traverse(setSpecificShadows);
     gltf.scene.scale.set(0.1, 0.1, 0.1);
     gltf.scene.position.y = -0.04;
-    console.log(gltf.scene);
     scene.add(gltf.scene);
     console.log("Modell zur Szene hinzugefügt.");
     resolve(true);

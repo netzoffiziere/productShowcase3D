@@ -1,0 +1,106 @@
+{
+  "controls": {
+    "type": "OrbitControls",
+    "minPolarAngle": 0,
+    "maxPolarAngle": 1.5708,
+    "minDistance": 0.15,
+    "maxDistance": 0.95
+  },
+  "objects": [
+    {
+      "type": "Sphere",
+      "name": "Erde",
+      "geometry": {
+        "radius": 512,
+        "widthSegments": 32,
+        "heightSegments": 32
+      },
+      "material": {
+        "type": "MeshPhongMaterial",
+        "color": "0x1565C0",
+        "specular": "0x111111",
+        "shininess": 30
+      },
+      "position": {
+        "x": 0,
+        "y": -512,
+        "z": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "name": "Himmel",
+      "geometry": {
+        "radius": 544,
+        "widthSegments": 32,
+        "heightSegments": 32
+      },
+      "material": {
+        "type": "ShaderMaterial"
+      },
+      "position": {
+        "y": -528
+      }
+    },
+    {
+      "type": "Sphere",
+      "name": "Sonne",
+      "geometry": {
+        "radius": 4096,
+        "widthSegments": 32,
+        "heightSegments": 32
+      },
+      "material": {
+        "type": "sunMaterial"
+      },
+      "position": {
+        "x": 0,
+        "y": 32768,
+        "z": 0
+      }
+    },
+    {
+      "type": "PointLight",
+      "name": "PointLight1",
+      "color": "0xFFD700",
+      "intensity": 1,
+      "distance": 1,
+      "decay": 1,
+      "castShadow": false,
+      "position": {
+        "x": 0.2,
+        "y": 0.2,
+        "z": 0
+      }
+    },
+    {
+      "type": "SpotLight",
+      "name": "SpotLight1",
+      "color": "0xAAAAAA",
+      "intensity": 1,
+      "distance": 3,
+      "decay": 1,
+      "castShadow": true,
+      "angle": 1,
+      "penumbra": 0.1,
+      "position": {
+        "x": 0,
+        "y": 0.14,
+        "z": 0
+      }
+    },
+    {
+      "type": "Model",
+      "name": "Haus",
+      "source": "loadResources",
+      "currentProduct": "HausProduct"
+    },
+    {
+      "type": "GLB",
+      "name": "GLBModel",
+      "source": "loadGLB",
+      "currentProduct": "GLBProduct"
+    }
+  ]
+}
+

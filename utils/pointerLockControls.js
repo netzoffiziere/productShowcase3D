@@ -8,9 +8,39 @@ let moveUp = false;
 let moveDown = false;
 let rotateLeft = false;
 let rotateRight = false;
+let isLocked = false;
 
-export function setupPointerLockControls(camera, renderer) {
-	const controls = new PointerLockControls(camera, renderer.domElement);
+export function setupPointerLockControls() {
+	const infoPanel = document.querySelector('#hud');
+	const datGui = document.querySelector('.dg.ac');
+	const controls = this.pointerLockControls;
+	let mouseOverInfoPanel = false;
+	let mouseOverDatGui = false;
+
+	infoPanel.addEventListener('mouseover', function() {
+		mouseOverInfoPanel = true;
+	});
+	
+	infoPanel.addEventListener('mouseout', function() {
+		mouseOverInfoPanel = false;
+	});
+
+	datGui.addEventListener('mouseover', function() {
+		mouseOverDatGui = true;
+	});
+
+	datGui.addEventListener('mouseout', function() {
+		mouseOverDatGui = false;
+	});	
+	document.addEventListener('mousedown', function () {
+		 if (mouseOverInfoPanel || mouseOverDatGui) {
+			return;
+		}
+		controls.lock();
+	});
+	document.addEventListener('mouseup', function () {
+		controls.unlock();
+	});
 	document.getElementById('move-up').addEventListener('mousedown', () => { moveUp = true; });
 	document.getElementById('move-up').addEventListener('mouseup', () => { moveUp = false; });
 	document.getElementById('move-down').addEventListener('mousedown', () => { moveDown = true; });
@@ -93,7 +123,7 @@ export function setupPointerLockControls(camera, renderer) {
 
 export function updatePointerLockControls(controls) {
 //  if (controls.isLocked) {
-    const speed = 0.02;
+    const speed = 0.005;
 
     const rotationSpeed = 0.005;
     if (moveForward) controls.getObject().translateZ(-speed);

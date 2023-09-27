@@ -1,12 +1,13 @@
-export function setupCamera(THREE) {
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000000);
+import * as THREE from 'three';
+export function setupCamera() {
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5120000);
   return camera;
 }
 
-export function updateCameraPosition(camera, axis, value) {
-  camera.position[axis] = value;
+export function updateCameraPosition(axis, value, worldObj) {
+  worldObj.camera.position[axis] = value;
 }
 
-export function updateCameraRotation(camera, axis, value) {
-  camera.rotation[axis] = THREE.MathUtils.degToRad(value);
+export function updateCameraRotation(axis, value, worldObj) {
+  worldObj.camera.rotation[axis] = THREE.MathUtils.degToRad(value);
 }

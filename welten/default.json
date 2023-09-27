@@ -1,0 +1,168 @@
+{
+  "cameraSettings": {
+    "position": { "x": 300000, "y": 530, "z": 530 },
+    "lookAt": { "x":300000, "y": 0, "z": 0}
+  },
+  "csm": {
+    "maxFar": 500000,
+    "near": 1000,
+    "lightNear": 1000,
+    "mode": "practical",
+    "fade": true,
+    "cascades": 8,
+    "shadowMapSize": 4096,
+    "lightDirection": [0, -2, 0],
+    "shadowBias": 0.001,
+    "lightIntensity": 0.1
+  },
+  "controls": {
+    "type": "PointerLockControls"
+  },
+  "objects": [
+    {
+      "type": "Group",
+      "name": "Gruppe: Sonne",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Sonne",
+          "geometry": {
+            "radius": 4096,
+            "widthSegments": 32,
+            "heightSegments": 32
+          },
+          "material": { "type": "sunMaterial", "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 0, "y": 0, "z": 0 }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "name": "Gruppe: Turing",
+      "position": { "x": 300000, "y": 0, "z": 0 },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Planet: Turing",
+          "geometry": { "radius": 512, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0x1565C0", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial", " side": "THREE.DoubleSide" },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+	{
+          "type": "Sphere",
+          "name": "Himmel: Turing",
+          "geometry": { "radius": 576, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "ShaderMaterial" },
+          "position": { "x": 0, "y": 0, "z": 0 }
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Enigma",
+          "geometry": { "radius": 3, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": -512, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Maschine",
+          "geometry": { "radius": 3.2, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": -156, "y": 312, "z": 256 },
+          "receiveShadow": true,
+          "castShadow": true
+        }
+
+      ]
+    },
+    {
+      "type": "Group",
+      "name": "Gruppe: Einstein",
+      "position": { "x": 0, "y": 216192, "z": 0 },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Planet: Einstein",
+          "geometry": { "radius": 11.6, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0x00FF00", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Relativity",
+          "geometry": { "radius": 4.8, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 128, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "name": "Gruppe: Newton",
+      "position": { "x": 0, "y": 0, "z": 455800 },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Planet: Newton",
+          "geometry": { "radius": 128, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xFF0000", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Gravity",
+          "geometry": { "radius": 96, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 728, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "name": "Gruppe: Da Vinci",
+      "position": { "x": 572158, "y": 0, "z": 0 },
+      "children": [
+        {
+          "type": "Sphere",
+          "name": "Planet: Da Vinci",
+          "geometry": { "radius": 8.4, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xFFFF00", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Mona",
+          "geometry": { "radius": 2, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 256, "y": 0, "z": 0 },
+          "receiveShadow": true,
+          "castShadow": true
+        },
+        {
+          "type": "Sphere",
+          "name": "Mond: Helix",
+          "geometry": { "radius": 4, "widthSegments": 32, "heightSegments": 32 },
+          "material": { "type": "MeshPhongMaterial", "color": "0xAAAAAA", "specular": "0x111111", "shininess": 30, "setupFunction": "csm.setupMaterial" },
+          "position": { "x": 128, "y": 128, "z": 128 },
+          "receiveShadow": true,
+          "castShadow": true
+        }
+      ]
+    }
+  ]
+}
+
